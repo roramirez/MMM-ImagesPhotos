@@ -1,0 +1,40 @@
+# MMM-ImagesPhotos
+This a module for the [MagicMirror](https://github.com/MichMich/MagicMirror). It will show photos from a directory.
+
+This module read the upload directory and show images from there.
+
+
+## Installation
+1. Clone this repository inside your MagicMirror's `modules` folder
+   `cd ~/MagicMirror/modules`
+   `git clone https://github.com/roramirez/MMM-ImagesPhotos.git`.
+
+## How show it
+![Demo](.github/animate.gif)
+
+## Config
+The entry in `config.js` can include the following options:
+
+
+| Option             | Description
+|--------------------|-----------
+| `opacity`          | The opacity of the image.<br><br>**Type:** `double`<br>Default 0.9
+| `animationSpeed`   | How long the fade out and fade in of photos should take.<br><br>**Type:** `int`<br>Default 500
+| `updateInterval`   | How long before to show a new image.<br><br>**Type:** `int`(milliseconds) <br>Default 5000 milliseconds
+| `getInterval`      | Interval value to get new images from directory.<br><br>**Type:** `int`(milliseconds) <br>Default 60000 milliseconds
+| `width`            | Value for maximun width. Optional, possible values: absolute (e.g. '700px') or relative ('50%') <br> Default 100%
+| `heigth`           | Value for maximun heigth. Optional, possible values: absolute (e.g. '400px') or relative ('70%') <br> Default 100%
+
+
+Here is an example of an entry in `config.js`
+```
+{
+	module: 'MMM-ImagesPhotos',
+	position: 'middle_center',
+	config: {
+		opacity: 0.9,
+		animationSpeed: 500,
+		updateInterval: 5000,
+	}
+},
+```

@@ -1,6 +1,6 @@
 {
   "name": "magicmirror-images-photos",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Show photos and images from directory",
   "main": "MMM-ImagesPhotos.js",
   "author": "Rodrigo Ramírez Norambuena",
