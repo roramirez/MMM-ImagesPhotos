@@ -15,7 +15,8 @@ Module.register("MMM-ImagesPhotos",{
 		getInterval: 60000,
 		maxWidth: "100%",
 		maxHeight: "100%",
-		retryDelay: 2500
+		retryDelay: 2500,
+		forceCache: false
 	},
 
 	requiresVersion: "2.1.0", // Required version of MagicMirror
@@ -129,7 +130,11 @@ Module.register("MMM-ImagesPhotos",{
 
 		if (photoImage) {
 			var img = document.createElement("img");
-			img.src = photoImage.url;
+			var urlImage = photoImage.url;
+			if (this.config.forceCache) {
+				urlImage += "?" + new Date().getTime();
+			}
+			img.src = urlImage;
 			img.id = "mmm-images-photos";
 			img.style.maxWidth = this.config.maxWidth;
 			img.style.maxHeight = this.config.maxHeight;
