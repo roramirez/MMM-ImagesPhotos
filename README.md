@@ -1,12 +1,15 @@
 # MMM-ImagesPhotos
 This a module for the [MagicMirror](https://github.com/MichMich/MagicMirror). It will show photos from a directory.
 
-This module read the upload directory and show images from there.
+This module read the images from the *uploads* directory inside the module.
+**Directory**: *MagicMirror/modules/MMM-ImagesPhotos/uploads*
 
 
 ## Installation
 1. Clone this repository inside your MagicMirror's `modules` folder
+
    `cd ~/MagicMirror/modules`
+
    `git clone https://github.com/roramirez/MMM-ImagesPhotos.git`.
 
 ## How show it
