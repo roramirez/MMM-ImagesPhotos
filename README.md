@@ -25,8 +25,8 @@ The entry in `config.js` can include the following options:
 | `animationSpeed`   | How long the fade out and fade in of photos should take.<br><br>**Type:** `int`<br>Default 500
 | `updateInterval`   | How long before to show a new image.<br><br>**Type:** `int`(milliseconds) <br>Default 5000 milliseconds
 | `getInterval`      | Interval value to get new images from directory.<br><br>**Type:** `int`(milliseconds) <br>Default 60000 milliseconds
-| `width`            | Value for maximun width. Optional, possible values: absolute (e.g. '700px') or relative ('50%') <br> Default 100%
-| `heigth`           | Value for maximun heigth. Optional, possible values: absolute (e.g. '400px') or relative ('70%') <br> Default 100%
+| `maxWidth`            | Value for maximun width. Optional, possible values: absolute (e.g. '700px') or relative ('50%') <br> Default 100%
+| `maxHeight`           | Value for maximun heigth. Optional, possible values: absolute (e.g. '400px') or relative ('70%') <br> Default 100%
 
 
 Here is an example of an entry in `config.js`
