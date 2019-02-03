@@ -184,10 +184,6 @@ Module.register("MMM-ImagesPhotos",{
 		// get the size of the margin, if any, we want to be full screen
 		var m = window.getComputedStyle(document.body,null).getPropertyValue('margin-top');
 		// set the style for the containing div
-		//Log.log("body size="+document.body.clientWidth+"+"+document.body.clientHeight+" margin="+m);
-
-	//	this.wrapper.style.width  = document.body.clientWidth+(parseInt(m)*2)+"px";
-	//	this.wrapper.style.height = document.body.clientHeight+(parseInt(m)*2)+"px";
 		
 		this.wrapper.style.backgroundColor = this.config.backgroundColor;
 		if(this.config.position==='fullscreen')
@@ -195,11 +191,6 @@ Module.register("MMM-ImagesPhotos",{
 		
 		this.wrapper.style.border = "none";
 		this.wrapper.style.margin = "0px";
-	//	this.wrapper.style.position = "absolute";
-	//	this.wrapper.style.left = 0;
-	//	this.wrapper.style.top = parseInt(this.wrapper.style.height)+60; //document.body.clientHeight+(parseInt(m))+"px";
-	//	this.wrapper.style.opacity = self.config.opacity;			
-	//	Log.log("body size="+this.wrapper.style.width+"+"+this.wrapper.style.height+" pos="+this.wrapper.style.top);
 
 		var photoImage = this.randomPhoto();
 		var img = null;
@@ -209,13 +200,11 @@ Module.register("MMM-ImagesPhotos",{
 			img = document.createElement("img");
 
 			// set default position, corrected in onload handler
-			img.style.left = 0+"px"
-;
+			img.style.left = 0+"px";
 		  img.style.top = document.body.clientHeight+(parseInt(m)*2);  
 			img.style.position="relative";
 
 			img.src = photoImage.url;
-//			img.id = "mmm-images-photos";
 			// make invisible
 			img.style.opacity = 0;
 			// append this image to the div
