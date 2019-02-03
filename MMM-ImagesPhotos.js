@@ -18,6 +18,9 @@ Module.register("MMM-ImagesPhotos",{
 		retryDelay: 2500
 	},
 
+	wrapper: null,
+	suspended: false,
+
 	requiresVersion: "2.1.0", // Required version of MagicMirror
 
 	start: function() {
@@ -29,7 +32,8 @@ Module.register("MMM-ImagesPhotos",{
 		// Schedule update timer.
 		this.getPhotos();
 		setInterval(function() {
-			self.updateDom(self.config.animationSpeed);
+		  if(self.suspended==false)
+				self.updateDom(self.config.animationSpeed);
 		}, this.config.updateInterval);
 
 	},
@@ -80,7 +84,7 @@ Module.register("MMM-ImagesPhotos",{
 			nextLoad = delay;
 		}
 		nextLoad = nextLoad ;
-		var self = this;
+		var self = this;	  
 		setTimeout(function() {
 			self.getPhotos();
 		}, nextLoad);
@@ -121,22 +125,144 @@ Module.register("MMM-ImagesPhotos",{
 		return photos[index];
 	},
 
+	ScaleImage: function(srcwidth, srcheight, targetwidth, targetheight, fLetterBox) {
+
+    var result = { width: 0, height: 0, fScaleToTargetWidth: true };
+
+    if ((srcwidth <= 0) || (srcheight <= 0) || (targetwidth <= 0) || (targetheight <= 0)) {
+        return result;
+    }
+
+    // scale to the target width
+    var scaleX1 = targetwidth;
+    var scaleY1 = (srcheight * targetwidth) / srcwidth;
+
+    // scale to the target height
+    var scaleX2 = (srcwidth * targetheight) / srcheight;
+    var scaleY2 = targetheight;
+
+    // now figure out which one we should use
+    var fScaleOnWidth = (scaleX2 > targetwidth);
+    if (fScaleOnWidth) {
+        fScaleOnWidth = fLetterBox;
+    }
+    else {
+       fScaleOnWidth = !fLetterBox;
+    }
+
+    if (fScaleOnWidth) {
+        result.width = Math.floor(scaleX1);
+        result.height = Math.floor(scaleY1);
+        result.fScaleToTargetWidth = true;
+    }
+    else {
+        result.width = Math.floor(scaleX2);
+        result.height = Math.floor(scaleY2);
+        result.fScaleToTargetWidth = false;
+    }
+    result.targetleft = Math.floor((targetwidth - result.width) / 2);
+    result.targettop = Math.floor((targetheight - result.height) / 2);
+
+    return result;
+},
+    
+  suspend: function(){
+		this.suspended=true
+	},
+	resume: function(){
+		this.suspended=false
+	},
+
 
 	getDom: function() {
-		var self = this;
-		var wrapper = document.createElement("div");
-		var photoImage = this.randomPhoto();
+		
+		// if wrapper div not yet created
+		if(this.wrapper ==null)
+			// create it
+			this.wrapper = document.createElement("div");
 
+		// get the size of the margin, if any, we want to be full screen
+		var m = window.getComputedStyle(document.body,null).getPropertyValue('margin-top');
+		// set the style for the containing div
+		//Log.log("body size="+document.body.clientWidth+"+"+document.body.clientHeight+" margin="+m);
+
+	//	this.wrapper.style.width  = document.body.clientWidth+(parseInt(m)*2)+"px";
+	//	this.wrapper.style.height = document.body.clientHeight+(parseInt(m)*2)+"px";
+		
+		this.wrapper.style.backgroundColor = this.config.backgroundColor;
+		if(this.config.position==='fullscreen')
+			this.wrapper.style.class=this.config.position+".above";
+		
+		this.wrapper.style.border = "none";
+		this.wrapper.style.margin = "0px";
+	//	this.wrapper.style.position = "absolute";
+	//	this.wrapper.style.left = 0;
+	//	this.wrapper.style.top = parseInt(this.wrapper.style.height)+60; //document.body.clientHeight+(parseInt(m))+"px";
+	//	this.wrapper.style.opacity = self.config.opacity;			
+	//	Log.log("body size="+this.wrapper.style.width+"+"+this.wrapper.style.height+" pos="+this.wrapper.style.top);
+
+		var photoImage = this.randomPhoto();
+		var img = null;
 		if (photoImage) {
-			var img = document.createElement("img");
+
+			// create img tag element
+			img = document.createElement("img");
+
+			// set default position, corrected in onload handler
+			img.style.left = 0+"px"
+;
+		  img.style.top = document.body.clientHeight+(parseInt(m)*2);  
+			img.style.position="relative";
+
 			img.src = photoImage.url;
-			img.id = "mmm-images-photos";
-			img.style.maxWidth = this.config.maxWidth;
-			img.style.maxHeight = this.config.maxHeight;
-			img.style.opacity = self.config.opacity;
-			wrapper.appendChild(img);
+//			img.id = "mmm-images-photos";
+			// make invisible
+			img.style.opacity = 0;
+			// append this image to the div
+			this.wrapper.appendChild(img);
+
+			// set the onload event handler
+			img.onload= function (evt) {
+
+				// get the image of the event
+  		  var img = evt.currentTarget;
+				//Log.log("image loaded="+img.src+" size="+img.width+":"+img.height);
+
+ 		   	// what's the size of this image and it's parent
+ 		   	var w = img.width;
+		    var h = img.height;
+		    var tw = document.body.clientWidth+(parseInt(this.m)*2);
+ 			  var th = document.body.clientHeight+(parseInt(this.m)*2);
+
+		    // compute the new size and offsets
+		    var result = this.self.ScaleImage(w, h, tw, th, true);
+
+		    // adjust the image size
+  		  img.width = result.width;
+		    img.height = result.height;
+
+				//Log.log("image setting size to "+result.width+":"+result.height);
+				//Log.log("image setting top to "+result.targetleft+":"+result.targettop);
+
+		    // adjust the image position
+		    img.style.left = result.targetleft+"px";
+		    img.style.top = result.targettop+"px";	
+				img.style.opacity =	this.self.config.opacity;
+				img.style.transition = "opacity 1.25s";
+
+				// if another image was already displayed
+				if( this.self.wrapper.firstChild!=this.self.wrapper.lastChild)
+				{
+					// hide it
+					this.self.wrapper.firstChild.style.opacity=0;	
+					// remove the image element from the div
+					this.self.wrapper.removeChild(this.self.wrapper.firstChild);
+				}
+
+			}.bind({self: this, m:m});
+			
 		}
-		return wrapper;
+		return this.wrapper;
 	},
 
 	getScripts: function() {
@@ -146,7 +272,7 @@ Module.register("MMM-ImagesPhotos",{
 	processPhotos: function(data) {
 		var self = this;
 		this.photos = data;
-		if (this.loaded === false) { self.updateDom(self.config.animationSpeed) ; }
+		if (this.loaded === false) { if(this.suspended==false) self.updateDom(self.config.animationSpeed) ; }
 		this.loaded = true;
 	},
 

@@ -50,8 +50,10 @@ module.exports = NodeHelper.create({
 	getPhotosImages: function(req, res) {
 		directoryImages = this.path_images;
 		var imagesPhotos = this.getImages(this.getFiles(directoryImages)).map(function (img) {
+			//console.log("have image="+img);
 			return {url: "/MMM-ImagesPhotos/photo/" + img};
 		})
+    //console.log("sending image list to module ="+imagesPhotos);
 		res.send(imagesPhotos);
 	},
 
@@ -70,11 +72,21 @@ module.exports = NodeHelper.create({
 	},
 
 	getFiles: function(path) {
+    //console.log("looking for images in"+path);
+		try {
 		return fs.readdirSync(path).filter(function (file) {
 			if (! fs.statSync(path + "/" + file).isDirectory() ) {
 				return file;
 			}
 		});
+		}
+		catch(error)
+		{
+			 if(error=='EHOSTDOWN')
+			 {
+				 return [];
+			 } 
+		}
 	},
 
 });
