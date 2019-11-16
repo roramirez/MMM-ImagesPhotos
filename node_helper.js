@@ -19,19 +19,21 @@ module.exports = NodeHelper.create({
 	start: function() {
 		var self = this;
 		console.log("Starting node helper for: " + this.name);
-		this.setConfig();
-		this.extraRoutes();
-
 	},
 
 	setConfig: function() {
-		this.config = {};
-		this.path_images = path.resolve(global.root_path + "/modules/MMM-ImagesPhotos/uploads");
+		this.path_images = path.resolve(global.root_path + "/modules/MMM-ImagesPhotos/uploads" + this.config.path);
+    if(this.config.debug)
+      console.log("path for : " + this.name +"= "+this.path_images);
 	},
 
 	// Override socketNotificationReceived method.
 	socketNotificationReceived: function(notification, payload) {
-
+      if(notification==='CONFIG'){
+        this.config=payload
+        this.setConfig();
+        this.extraRoutes();
+      }
 	},
 
 	// create routes for module manager.
@@ -50,7 +52,8 @@ module.exports = NodeHelper.create({
 	getPhotosImages: function(req, res) {
 		directoryImages = this.path_images;
 		var imagesPhotos = this.getImages(this.getFiles(directoryImages)).map(function (img) {
-			//console.log("have image="+img);
+      if(this.config.debug)
+			  console.log("have image="+img);
 			return {url: "/MMM-ImagesPhotos/photo/" + img};
 		})
     //console.log("sending image list to module ="+imagesPhotos);
@@ -72,21 +75,18 @@ module.exports = NodeHelper.create({
 	},
 
 	getFiles: function(path) {
-    //console.log("looking for images in"+path);
+		var files=[];
 		try {
-		return fs.readdirSync(path).filter(function (file) {
-			if (! fs.statSync(path + "/" + file).isDirectory() ) {
-				return file;
-			}
-		});
+			files= fs.readdirSync(path).filter(function (file) {
+				if (! fs.statSync(path + "/" + file).isDirectory() ) {
+					return file;
+				}
+			});
 		}
-		catch(error)
-		{
-			 if(error=='EHOSTDOWN')
-			 {
-				 return [];
-			 } 
+		catch(exception){
+			console.log("getfiles unable to access source folder, will retry");
 		}
+		return files;
 	},
 
 });
