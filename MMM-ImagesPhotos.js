@@ -73,7 +73,8 @@ Module.register("MMM-ImagesPhotos",{
     photosRequest.send();
   },
 
-
+	notificationReceived(notification, payload, source){
+	},
   /* scheduleUpdate()
    * Schedule next update.
    *
@@ -218,7 +219,7 @@ Module.register("MMM-ImagesPhotos",{
 
         // get the image of the event
         var img = evt.currentTarget;
-        //Log.log("image loaded="+img.src+" size="+img.width+":"+img.height);
+        Log.log("image loaded="+img.src+" size="+img.width+":"+img.height);
 
         // what's the size of this image and it's parent
         var w = img.width;
@@ -233,8 +234,8 @@ Module.register("MMM-ImagesPhotos",{
         img.width = result.width;
         img.height = result.height;
 
-        //Log.log("image setting size to "+result.width+":"+result.height);
-        //Log.log("image setting top to "+result.targetleft+":"+result.targettop);
+        Log.log("image setting size to "+result.width+":"+result.height);
+        Log.log("image setting top to "+result.targetleft+":"+result.targettop);
 
         // adjust the image position
         img.style.left = result.targetleft+"px";
