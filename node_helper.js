@@ -13,7 +13,6 @@ var path = require("path");
 var fs = require("fs");
 var mime = require("mime-types");
 
-
 module.exports = NodeHelper.create({
 	// Override start method.
 	start: function() {
@@ -23,17 +22,17 @@ module.exports = NodeHelper.create({
 
 	setConfig: function() {
 		this.path_images = path.resolve(global.root_path + "/modules/MMM-ImagesPhotos/uploads" + this.config.path);
-    if(this.config.debug)
-      console.log("path for : " + this.name +"= "+this.path_images);
+		if(this.config.debug)
+		{console.log("path for : " + this.name +"= "+this.path_images);}
 	},
 
 	// Override socketNotificationReceived method.
 	socketNotificationReceived: function(notification, payload) {
-      if(notification==='CONFIG'){
-        this.config=payload
-        this.setConfig();
-        this.extraRoutes();
-      }
+		if(notification==="CONFIG"){
+			this.config=payload;
+			this.setConfig();
+			this.extraRoutes();
+		}
 	},
 
 	// create routes for module manager.
@@ -52,11 +51,11 @@ module.exports = NodeHelper.create({
 	getPhotosImages: function(req, res) {
 		directoryImages = this.path_images;
 		var imagesPhotos = this.getImages(this.getFiles(directoryImages)).map(function (img) {
-      if(this.config.debug)
-			  console.log("have image="+img);
+			if(this.config.debug)
+			  {console.log("have image="+img);}
 			return {url: "/MMM-ImagesPhotos/photo/" + img};
-		})
-    //console.log("sending image list to module ="+imagesPhotos);
+		});
+		//console.log("sending image list to module ="+imagesPhotos);
 		res.send(imagesPhotos);
 	},
 
