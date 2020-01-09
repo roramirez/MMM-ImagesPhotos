@@ -32,7 +32,7 @@ module.exports = NodeHelper.create({
 		if(notification==="CONFIG"){
 			this.config=payload;
 			this.setConfig();
-			this.extraRoutes();					
+			this.extraRoutes();
 			this.sendSocketNotification("READY");
 		}
 	},
