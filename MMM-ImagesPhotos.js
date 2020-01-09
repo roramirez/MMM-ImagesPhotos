@@ -31,13 +31,6 @@ Module.register("MMM-ImagesPhotos",{
 		this.loaded = false;
 		this.lastPhotoIndex = -1;
 		this.sendSocketNotification("CONFIG", this.config);
-		// Schedule update timer.
-		this.getPhotos();
-		setInterval(function() {
-			if(self.suspended==false)
-			{self.updateDom(self.config.animationSpeed);}
-		}, this.config.updateInterval);
-
 	},
 
 	/*
@@ -52,7 +45,6 @@ Module.register("MMM-ImagesPhotos",{
 
 		var photosRequest = new XMLHttpRequest();
 		photosRequest.open("GET", urlApHelper, true);
-
 		photosRequest.onreadystatechange = function() {
 			if (this.readyState === 4) {
 				if (this.status === 200) {
@@ -72,8 +64,19 @@ Module.register("MMM-ImagesPhotos",{
 		};
 		photosRequest.send();
 	},
+	notificationReceived(notification,payload,sender){
+		// hook to turn off messages about notiofications, clock once a second
+	},
 
-	notificationReceived(notification, payload, source){
+	socketNotificationReceived(notification, payload, source){
+		if(notification == "READY") {
+			// Schedule update timer.
+			this.getPhotos();
+			setInterval(function() {
+				if(self.suspended==false)
+				{self.updateDom(self.config.animationSpeed);}
+			}, this.config.updateInterval);
+		}
 	},
 	/* scheduleUpdate()
    * Schedule next update.
@@ -181,82 +184,83 @@ Module.register("MMM-ImagesPhotos",{
 		if(this.wrapper ==null)
 		// create it once, try to reduce image flash on change
 		{this.wrapper = document.createElement("div");}
+		if(this.photos.length) {
 
-		// get the size of the margin, if any, we want to be full screen
-		var m = window.getComputedStyle(document.body,null).getPropertyValue("margin-top");
-		// set the style for the containing div
+			// get the size of the margin, if any, we want to be full screen
+			var m = window.getComputedStyle(document.body,null).getPropertyValue("margin-top");
+			// set the style for the containing div
 
-		this.wrapper.style.backgroundColor = this.config.backgroundColor;
-		if(this.config.position==="fullscreen")
-		{this.wrapper.style.class=this.config.position+".above";}
+			this.wrapper.style.backgroundColor = this.config.backgroundColor;
+			if(this.config.position==="fullscreen")
+			{this.wrapper.style.class=this.config.position+".above";}
 
-		this.wrapper.style.border = "none";
-		this.wrapper.style.margin = "0px";
+			this.wrapper.style.border = "none";
+			this.wrapper.style.margin = "0px";
 
-		var photoImage = this.randomPhoto();
-		var img = null;
-		if (photoImage) {
+			var photoImage = this.randomPhoto();
+			var img = null;
+			if (photoImage) {
 
-			// create img tag element
-			img = document.createElement("img");
+				// create img tag element
+				img = document.createElement("img");
 
-			// set default position, corrected in onload handler
-			img.style.left = 0+"px";
-			img.style.top = document.body.clientHeight+(parseInt(m)*2);
-			img.style.position="relative";
+				// set default position, corrected in onload handler
+				img.style.left = 0+"px";
+				img.style.top = document.body.clientHeight+(parseInt(m)*2);
+				img.style.position="relative";
 
-			img.src = photoImage.url;
-			// make invisible
-			img.style.opacity = 0;
-			// append this image to the div
-			this.wrapper.appendChild(img);
+				img.src = photoImage.url;
+				// make invisible
+				img.style.opacity = 0;
+				// append this image to the div
+				this.wrapper.appendChild(img);
 
-			// set the onload event handler
-			// the loadurl request will happen when the html is returned to MM and inserted into the dom.
-			img.onload= function (evt) {
+				// set the onload event handler
+				// the loadurl request will happen when the html is returned to MM and inserted into the dom.
+				img.onload= function (evt) {
 
-				// get the image of the event
-				var img = evt.currentTarget;
-				Log.log("image loaded="+img.src+" size="+img.width+":"+img.height);
+					// get the image of the event
+					var img = evt.currentTarget;
+					Log.log("image loaded="+img.src+" size="+img.width+":"+img.height);
 
-				// what's the size of this image and it's parent
-				var w = img.width;
-				var h = img.height;
-				var tw = document.body.clientWidth+(parseInt(this.m)*2);
-				var th = document.body.clientHeight+(parseInt(this.m)*2);
+					// what's the size of this image and it's parent
+					var w = img.width;
+					var h = img.height;
+					var tw = document.body.clientWidth+(parseInt(this.m)*2);
+					var th = document.body.clientHeight+(parseInt(this.m)*2);
 
-				// compute the new size and offsets
-				var result = this.self.ScaleImage(w, h, tw, th, true);
+					// compute the new size and offsets
+					var result = this.self.ScaleImage(w, h, tw, th, true);
 
-				// adjust the image size
-				img.width = result.width;
-				img.height = result.height;
+					// adjust the image size
+					img.width = result.width;
+					img.height = result.height;
 
-				Log.log("image setting size to "+result.width+":"+result.height);
-				Log.log("image setting top to "+result.targetleft+":"+result.targettop);
+					Log.log("image setting size to "+result.width+":"+result.height);
+					Log.log("image setting top to "+result.targetleft+":"+result.targettop);
 
-				// adjust the image position
-				img.style.left = result.targetleft+"px";
-				img.style.top = result.targettop+"px";
-				//img.style.opacity =	this.self.config.opacity;
-				//img.style.transition = "opacity 1.25s";
+					// adjust the image position
+					img.style.left = result.targetleft+"px";
+					img.style.top = result.targettop+"px";
+					//img.style.opacity =	this.self.config.opacity;
+					//img.style.transition = "opacity 1.25s";
 
-				// if another image was already displayed
-				let c = this.self.wrapper.childElementCount;
-				if( c>1)
-				{
-					for( let i =0 ; i<c-1;i++){
-						// hide it
-						this.self.wrapper.firstChild.style.opacity=0;
-						// remove the image element from the div
-						this.self.wrapper.removeChild(this.self.wrapper.firstChild);
+					// if another image was already displayed
+					let c = this.self.wrapper.childElementCount;
+					if( c>1)
+					{
+						for( let i =0 ; i<c-1;i++){
+							// hide it
+							this.self.wrapper.firstChild.style.opacity=0;
+							// remove the image element from the div
+							this.self.wrapper.removeChild(this.self.wrapper.firstChild);
+						}
 					}
-				}
-				this.self.wrapper.firstChild.style.opacity = this.self.config.opacity;
-				this.self.wrapper.firstChild.style.transition = "opacity 1.25s";
+					this.self.wrapper.firstChild.style.opacity = this.self.config.opacity;
+					this.self.wrapper.firstChild.style.transition = "opacity 1.25s";
 
-			}.bind({self: this, m:m});
-
+				}.bind({self: this, m:m});
+			}
 		}
 		return this.wrapper;
 	},

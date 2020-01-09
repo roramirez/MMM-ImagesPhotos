@@ -18,6 +18,7 @@ module.exports = NodeHelper.create({
 	start: function() {
 		var self = this;
 		console.log("Starting node helper for: " + this.name);
+
 	},
 
 	setConfig: function() {
@@ -31,7 +32,8 @@ module.exports = NodeHelper.create({
 		if(notification==="CONFIG"){
 			this.config=payload;
 			this.setConfig();
-			this.extraRoutes();
+			this.extraRoutes();					
+			this.sendSocketNotification("READY");
 		}
 	},
 
@@ -55,7 +57,6 @@ module.exports = NodeHelper.create({
 			  {console.log("have image="+img);}
 			return {url: "/MMM-ImagesPhotos/photo/" + img};
 		});
-		//console.log("sending image list to module ="+imagesPhotos);
 		res.send(imagesPhotos);
 	},
 
