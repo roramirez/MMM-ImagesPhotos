@@ -70,11 +70,13 @@ Module.register("MMM-ImagesPhotos",{
 
 	socketNotificationReceived(notification, payload, source){
 		if(notification == "READY") {
+			let self = this;
 			// Schedule update timer.
 			this.getPhotos();
 			setInterval(function() {
-				if(self.suspended==false)
-				{self.updateDom(self.config.animationSpeed);}
+				if(self.suspended==false){
+					self.updateDom(self.config.animationSpeed);
+				}
 			}, this.config.updateInterval);
 		}
 	},
