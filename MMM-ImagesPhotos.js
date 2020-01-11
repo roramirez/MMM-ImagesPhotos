@@ -18,6 +18,7 @@ Module.register("MMM-ImagesPhotos",{
 		retryDelay: 2500,
 		path: "",
 		debug: false,
+		fill: false,
 	},
 
 	wrapper: null,
@@ -31,6 +32,9 @@ Module.register("MMM-ImagesPhotos",{
 		this.loaded = false;
 		this.lastPhotoIndex = -1;
 		this.sendSocketNotification("CONFIG", this.config);
+	},
+	getStyles: function() {
+		return ["MMM-ImagesPhotos.css"];
 	},
 
 	/*
@@ -192,12 +196,17 @@ Module.register("MMM-ImagesPhotos",{
 			var m = window.getComputedStyle(document.body,null).getPropertyValue("margin-top");
 			// set the style for the containing div
 
-			this.wrapper.style.backgroundColor = this.config.backgroundColor;
+			
 			if(this.config.position==="fullscreen")
 			{this.wrapper.style.class=this.config.position+".above";}
 
 			this.wrapper.style.border = "none";
 			this.wrapper.style.margin = "0px";
+			
+			if(this.config.fill== true)
+				this.wrapper.class+="bg_image";
+			else 
+				this.wrapper.style.backgroundColor = this.config.backgroundColor;
 
 			var photoImage = this.randomPhoto();
 			var img = null;
@@ -260,6 +269,9 @@ Module.register("MMM-ImagesPhotos",{
 					}
 					this.self.wrapper.firstChild.style.opacity = this.self.config.opacity;
 					this.self.wrapper.firstChild.style.transition = "opacity 1.25s";
+					if(this.self.config.fill== true)
+						this.self.wrapper.style.backgroundImage = "url("+this.self.wrapper.firstChild.src+")"
+
 
 				}.bind({self: this, m:m});
 			}
