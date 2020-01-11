@@ -3,24 +3,22 @@
  * Custom CSS module here
  *
  * */
-.bg-image {
+.bgimage {
   /* The image used */
 
   /* Add the blur effect */
-  filter: blur(8px);
-  -webkit-filter: blur(8px);
+  filter: blur(24px);
+  /*-webkit-filter: blur(24px); */
 
   /* Full height */
   //height: 100%;
 
   /* Center and scale the image nicely */
- /* background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain; 
-  background-size: contain; */
+
   position: absolute;
   background-position: center;
   background-repeat: no-repeat;
   height: 100%;
   width: 100%;
+  background-size: cover;
 }

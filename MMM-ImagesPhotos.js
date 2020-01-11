@@ -185,28 +185,31 @@ Module.register("MMM-ImagesPhotos",{
 	},
 
 	getDom: function() {
-
+    let self = this
 		// if wrapper div not yet created
 		if(this.wrapper ==null)
 		// create it once, try to reduce image flash on change
-		{this.wrapper = document.createElement("div");}
+		{this.wrapper = document.createElement("div");
+		  this.bk=document.createElement("div");
+			this.bk.className="bgimage";			
+			if(this.config.fill== true){
+			  //this.wrapper.style.filter="blur(24px)"; 
+				//this.wrapper.style.backgroundSize="contain";
+			}
+			else 
+				this.bk.style.backgroundColor = this.config.backgroundColor;
+			this.wrapper.appendChild(this.bk)
+			this.fg=document.createElement("div");
+			this.wrapper.appendChild(this.fg)
+		}
 		if(this.photos.length) {
 
 			// get the size of the margin, if any, we want to be full screen
-			var m = window.getComputedStyle(document.body,null).getPropertyValue("margin-top");
+			let m = window.getComputedStyle(document.body,null).getPropertyValue("margin-top");
 			// set the style for the containing div
 
-			
-			if(this.config.position==="fullscreen")
-			{this.wrapper.style.class=this.config.position+".above";}
-
-			this.wrapper.style.border = "none";
-			this.wrapper.style.margin = "0px";
-			
-			if(this.config.fill== true)
-				this.wrapper.class+="bg_image";
-			else 
-				this.wrapper.style.backgroundColor = this.config.backgroundColor;
+			this.fg.style.border = "none";
+			this.fg.style.margin = "0px";
 
 			var photoImage = this.randomPhoto();
 			var img = null;
@@ -224,24 +227,24 @@ Module.register("MMM-ImagesPhotos",{
 				// make invisible
 				img.style.opacity = 0;
 				// append this image to the div
-				this.wrapper.appendChild(img);
+				this.fg.appendChild(img);
 
 				// set the onload event handler
 				// the loadurl request will happen when the html is returned to MM and inserted into the dom.
-				img.onload= function (evt) {
+				img.onload=  (evt) => {
 
 					// get the image of the event
-					var img = evt.currentTarget;
+					let img = evt.currentTarget;
 					Log.log("image loaded="+img.src+" size="+img.width+":"+img.height);
 
 					// what's the size of this image and it's parent
 					var w = img.width;
 					var h = img.height;
-					var tw = document.body.clientWidth+(parseInt(this.m)*2);
-					var th = document.body.clientHeight+(parseInt(this.m)*2);
+					var tw = document.body.clientWidth+(parseInt(m)*2);
+					var th = document.body.clientHeight+(parseInt(m)*2);
 
 					// compute the new size and offsets
-					var result = this.self.ScaleImage(w, h, tw, th, true);
+					var result = self.ScaleImage(w, h, tw, th, true);
 
 					// adjust the image size
 					img.width = result.width;
@@ -257,23 +260,24 @@ Module.register("MMM-ImagesPhotos",{
 					//img.style.transition = "opacity 1.25s";
 
 					// if another image was already displayed
-					let c = this.self.wrapper.childElementCount;
+					let c = self.fg.childElementCount;
 					if( c>1)
 					{
 						for( let i =0 ; i<c-1;i++){
 							// hide it
-							this.self.wrapper.firstChild.style.opacity=0;
+							self.fg.firstChild.style.opacity=0;
+							self.fg.firstChild.style.backgroundColor = "rgba(0,0,0,0)";	
 							// remove the image element from the div
-							this.self.wrapper.removeChild(this.self.wrapper.firstChild);
+							self.fg.removeChild(self.fg.firstChild);
 						}
 					}
-					this.self.wrapper.firstChild.style.opacity = this.self.config.opacity;
-					this.self.wrapper.firstChild.style.transition = "opacity 1.25s";
-					if(this.self.config.fill== true)
-						this.self.wrapper.style.backgroundImage = "url("+this.self.wrapper.firstChild.src+")"
-
-
-				}.bind({self: this, m:m});
+					self.fg.firstChild.style.opacity = self.config.opacity;
+				
+					self.fg.firstChild.style.transition = "opacity 1.25s";
+					if(self.config.fill== true){
+						self.bk.style.backgroundImage = "url("+self.fg.firstChild.src+")"
+					}
+				} //.bind({self: this, m:m});
 			}
 		}
 		return this.wrapper;
