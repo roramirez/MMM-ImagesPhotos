@@ -23,6 +23,7 @@ Module.register("MMM-ImagesPhotos",{
 
 	wrapper: null,
 	suspended: false,
+	timer:null,
 
 	requiresVersion: "2.1.0", // Required version of MagicMirror
 
@@ -71,17 +72,23 @@ Module.register("MMM-ImagesPhotos",{
 	notificationReceived(notification,payload,sender){
 		// hook to turn off messages about notiofications, clock once a second
 	},
+	startTimer: function(){
+		let self = this
+		self.timer=setTimeout(() => {
+			  // clear timer value for resume
+				self.timer=null;
+				if(self.suspended==false){					
+					self.updateDom(self.config.animationSpeed);
+				}
+			}, this.config.updateInterval);
+	},
 
 	socketNotificationReceived(notification, payload, source){
 		if(notification == "READY") {
 			let self = this;
 			// Schedule update timer.
 			this.getPhotos();
-			setInterval(function() {
-				if(self.suspended==false){
-					self.updateDom(self.config.animationSpeed);
-				}
-			}, this.config.updateInterval);
+			//this.startTimer();
 		}
 	},
 	/* scheduleUpdate()
@@ -113,7 +120,7 @@ Module.register("MMM-ImagesPhotos",{
 		if (photos.length === 1) {
 			return 0;
 		}
-
+ 
 		var generate = function() {
 			return Math.floor(Math.random() * photos.length);
 		};
@@ -179,9 +186,15 @@ Module.register("MMM-ImagesPhotos",{
 
 	suspend: function(){
 		this.suspended=true;
+		if(this.timer!=null){
+			clearTimeout(this.timer);
+			this.timer=null;
+		}
 	},
 	resume: function(){
 		this.suspended=false;
+		if(this.timer==null) 
+			this.startTimer();
 	},
 
 	getDom: function() {
@@ -277,7 +290,8 @@ Module.register("MMM-ImagesPhotos",{
 					if(self.config.fill== true){
 						self.bk.style.backgroundImage = "url("+self.fg.firstChild.src+")"
 					}
-				} //.bind({self: this, m:m});
+					self.startTimer();
+				}
 			}
 		}
 		return this.wrapper;
