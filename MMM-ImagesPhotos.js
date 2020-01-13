@@ -19,6 +19,7 @@ Module.register("MMM-ImagesPhotos",{
 		path: "",
 		debug: false,
 		fill: false,
+		blur: 8, 
 	},
 
 	wrapper: null,
@@ -73,6 +74,7 @@ Module.register("MMM-ImagesPhotos",{
 		// hook to turn off messages about notiofications, clock once a second
 	},
 	startTimer: function(){
+				Log.log("start timer");
 		let self = this
 		self.timer=setTimeout(() => {
 			  // clear timer value for resume
@@ -185,6 +187,7 @@ Module.register("MMM-ImagesPhotos",{
 	},
 
 	suspend: function(){
+		Log.log("suspend");
 		this.suspended=true;
 		if(this.timer!=null){
 			clearTimeout(this.timer);
@@ -192,6 +195,7 @@ Module.register("MMM-ImagesPhotos",{
 		}
 	},
 	resume: function(){
+				Log.log("resume");
 		this.suspended=false;
 		if(this.timer==null) 
 			this.startTimer();
@@ -206,8 +210,8 @@ Module.register("MMM-ImagesPhotos",{
 		  this.bk=document.createElement("div");
 			this.bk.className="bgimage";			
 			if(this.config.fill== true){
-			  //this.wrapper.style.filter="blur(24px)"; 
-				//this.wrapper.style.backgroundSize="contain";
+					this.bk.style["filter"] ="blur("+this.config.blur+"px)";
+					this.bk.style["-webkit-filter"] ="blur("+this.config.blur+"px)";
 			}
 			else 
 				this.bk.style.backgroundColor = this.config.backgroundColor;

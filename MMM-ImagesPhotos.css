@@ -4,14 +4,6 @@
  *
  * */
 .bgimage {
-  /* The image used */
-
-  /* Add the blur effect */
-  filter: blur(24px);
-  /*-webkit-filter: blur(24px); */
-
-  /* Full height */
-  //height: 100%;
 
   /* Center and scale the image nicely */
 
