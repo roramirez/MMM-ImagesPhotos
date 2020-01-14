@@ -17,7 +17,6 @@ Module.register("MMM-ImagesPhotos",{
 		maxHeight: "100%",
 		retryDelay: 2500,
 		path: "",
-		debug: false,
 		fill: false,
 		blur: 8,
 	},
@@ -270,8 +269,6 @@ Module.register("MMM-ImagesPhotos",{
 					// adjust the image position
 					img.style.left = result.targetleft+"px";
 					img.style.top = result.targettop+"px";
-					//img.style.opacity =	this.self.config.opacity;
-					//img.style.transition = "opacity 1.25s";
 
 					// if another image was already displayed
 					let c = self.fg.childElementCount;
@@ -309,12 +306,4 @@ Module.register("MMM-ImagesPhotos",{
 		this.loaded = true;
 	},
 
-/*getTemplate: function() {
-	Log.log("in getTemplate");
-	return "";
-},
-getTemplateData: function (){
-	Log.log("in getTemplateData");
-	return "";
-} */
 });
