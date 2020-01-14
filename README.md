@@ -27,7 +27,9 @@ The entry in `config.js` can include the following options:
 | `getInterval`      | Interval value to get new images from directory.<br><br>**Type:** `int`(milliseconds) <br>Default 60000 milliseconds
 | `maxWidth`         | Value for maximum width. Optional, possible values: absolute (e.g. "700px") or relative ("50%") <br> Default 100%
 | `maxHeight`        | Value for maximum height. Optional, possible values: absolute (e.g. "400px") or relative ("70%") <br> Default 100%
-
+| `backgroundColor`  | Value for color used to fill around the image if not fullscreen, default 'black', can be #xxyyzz, like #808080 (grey),<br> if fill is true, the backgroundColor setting is ignored
+| `fill`             | true or false, default false. instead of color use a blurred copy of the image to fill around the image
+| `blur`             |  the size of the pixel blur of the background fill, default 8
 
 Here is an example of an entry in `config.js`
 ```
@@ -38,6 +40,9 @@ Here is an example of an entry in `config.js`
 		opacity: 0.9,
 		animationSpeed: 500,
 		updateInterval: 5000,
+		backgroundColor: 'grey',  // not used if fill is true
+		fill: false,   // fill around image with blurred copy of image
+		blur: 10,   // only used if fill is true
 	}
 },
 ```
