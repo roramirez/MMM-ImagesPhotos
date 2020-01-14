@@ -73,7 +73,6 @@ Module.register("MMM-ImagesPhotos",{
 		// hook to turn off messages about notiofications, clock once a second
 	},
 	startTimer: function(){
-				Log.log("start timer");
 		let self = this
 		self.timer=setTimeout(() => {
 			  // clear timer value for resume
@@ -186,7 +185,6 @@ Module.register("MMM-ImagesPhotos",{
 	},
 
 	suspend: function(){
-		Log.log("suspend");
 		this.suspended=true;
 		if(this.timer!=null){
 			clearTimeout(this.timer);
@@ -194,7 +192,6 @@ Module.register("MMM-ImagesPhotos",{
 		}
 	},
 	resume: function(){
-				Log.log("resume");
 		this.suspended=false;
 		if(this.timer==null) 
 			this.startTimer();
