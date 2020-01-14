@@ -19,7 +19,7 @@ Module.register("MMM-ImagesPhotos",{
 		path: "",
 		debug: false,
 		fill: false,
-		blur: 8, 
+		blur: 8,
 	},
 
 	wrapper: null,
@@ -74,15 +74,14 @@ Module.register("MMM-ImagesPhotos",{
 		// hook to turn off messages about notiofications, clock once a second
 	},
 	startTimer: function(){
-				Log.log("start timer");
-		let self = this
+		let self = this;
 		self.timer=setTimeout(() => {
 			  // clear timer value for resume
-				self.timer=null;
-				if(self.suspended==false){					
-					self.updateDom(self.config.animationSpeed);
-				}
-			}, this.config.updateInterval);
+			self.timer=null;
+			if(self.suspended==false){
+				self.updateDom(self.config.animationSpeed);
+			}
+		}, this.config.updateInterval);
 	},
 
 	socketNotificationReceived(notification, payload, source){
@@ -122,7 +121,7 @@ Module.register("MMM-ImagesPhotos",{
 		if (photos.length === 1) {
 			return 0;
 		}
- 
+
 		var generate = function() {
 			return Math.floor(Math.random() * photos.length);
 		};
@@ -187,7 +186,6 @@ Module.register("MMM-ImagesPhotos",{
 	},
 
 	suspend: function(){
-		Log.log("suspend");
 		this.suspended=true;
 		if(this.timer!=null){
 			clearTimeout(this.timer);
@@ -195,29 +193,28 @@ Module.register("MMM-ImagesPhotos",{
 		}
 	},
 	resume: function(){
-				Log.log("resume");
 		this.suspended=false;
-		if(this.timer==null) 
-			this.startTimer();
+		if(this.timer==null)
+		{this.startTimer();}
 	},
 
 	getDom: function() {
-    let self = this
+		let self = this;
 		// if wrapper div not yet created
 		if(this.wrapper ==null)
 		// create it once, try to reduce image flash on change
 		{this.wrapper = document.createElement("div");
 		  this.bk=document.createElement("div");
-			this.bk.className="bgimage";			
+			this.bk.className="bgimage";
 			if(this.config.fill== true){
-					this.bk.style["filter"] ="blur("+this.config.blur+"px)";
-					this.bk.style["-webkit-filter"] ="blur("+this.config.blur+"px)";
+				this.bk.style["filter"] ="blur("+this.config.blur+"px)";
+				this.bk.style["-webkit-filter"] ="blur("+this.config.blur+"px)";
 			}
-			else 
-				this.bk.style.backgroundColor = this.config.backgroundColor;
-			this.wrapper.appendChild(this.bk)
+			else
+			{this.bk.style.backgroundColor = this.config.backgroundColor;}
+			this.wrapper.appendChild(this.bk);
 			this.fg=document.createElement("div");
-			this.wrapper.appendChild(this.fg)
+			this.wrapper.appendChild(this.fg);
 		}
 		if(this.photos.length) {
 
@@ -283,19 +280,19 @@ Module.register("MMM-ImagesPhotos",{
 						for( let i =0 ; i<c-1;i++){
 							// hide it
 							self.fg.firstChild.style.opacity=0;
-							self.fg.firstChild.style.backgroundColor = "rgba(0,0,0,0)";	
+							self.fg.firstChild.style.backgroundColor = "rgba(0,0,0,0)";
 							// remove the image element from the div
 							self.fg.removeChild(self.fg.firstChild);
 						}
 					}
 					self.fg.firstChild.style.opacity = self.config.opacity;
-				
+
 					self.fg.firstChild.style.transition = "opacity 1.25s";
 					if(self.config.fill== true){
-						self.bk.style.backgroundImage = "url("+self.fg.firstChild.src+")"
+						self.bk.style.backgroundImage = "url("+self.fg.firstChild.src+")";
 					}
 					self.startTimer();
-				}
+				};
 			}
 		}
 		return this.wrapper;
