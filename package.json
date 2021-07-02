@@ -15,12 +15,12 @@
     "stylelint-config-standard": "latest",
     "time-grunt": "latest"
   },
-  "dependencies":{
-    "request",
-    "url",
-    "express",
-    "path",
-    "fs",
-    "mime-types"
+  "dependencies": {
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "mime-types": "^2.1.31",
+    "path": "^0.12.7",
+    "request": "^2.88.2",
+    "url": "^0.11.0"
   }
 }
