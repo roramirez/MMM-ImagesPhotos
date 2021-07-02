@@ -14,5 +14,13 @@
     "grunt-yamllint": "latest",
     "stylelint-config-standard": "latest",
     "time-grunt": "latest"
+  },
+  "dependencies":{
+    "request",
+    "url",
+    "express",
+    "path",
+    "fs",
+    "mime-types"
   }
 }
