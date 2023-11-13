@@ -19,6 +19,7 @@ Module.register("MMM-ImagesPhotos",{
 		path: "",
 		fill: false,
 		blur: 8,
+		sequential:false
 	},
 
 	wrapper: null,
@@ -125,7 +126,9 @@ Module.register("MMM-ImagesPhotos",{
 			return Math.floor(Math.random() * photos.length);
 		};
 
-		var photoIndex = generate();
+		var photoIndex = (this.lastPhotoIndex==photos.length-1?0:this.lastPhotoIndex+1);
+		if(!this.config.sequential)
+			photoIndex =generate();
 		this.lastPhotoIndex = photoIndex;
 
 		return photoIndex;

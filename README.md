@@ -33,7 +33,8 @@ The entry in `config.js` can include the following options:
 | `maxHeight`        | Value for maximum height. Optional, possible values: absolute (e.g. "400px") or relative ("70%") <br> Default 100%
 | `backgroundColor`  | Value for color used to fill around the image if not fullscreen, default 'black', can be #xxyyzz, like #808080 (grey),<br> if fill is true, the backgroundColor setting is ignored
 | `fill`             | true or false, default false. instead of color use a blurred copy of the image to fill around the image
-| `blur`             |  the size of the pixel blur of the background fill, default 8
+| `blur`             | the size of the pixel blur of the background fill, default 8
+| `sequential`       | true or false, default false, whether to process the images randomly(default) or sequentially
 
 Here is an example of an entry in `config.js`
 ```
@@ -47,6 +48,7 @@ Here is an example of an entry in `config.js`
 		backgroundColor: 'grey',  // not used if fill is true
 		fill: false,   // fill around image with blurred copy of image
 		blur: 10,   // only used if fill is true
+		sequential: false  // process the image list randomly
 	}
 },
 ```

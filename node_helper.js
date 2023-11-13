@@ -52,9 +52,11 @@ module.exports = NodeHelper.create({
 	// return photos-images by response in JSON format.
 	getPhotosImages: function(req, res) {
 		directoryImages = this.path_images;
-		var imagesPhotos = this.getImages(this.getFiles(directoryImages)).map(function (img) {
-			if(this.config.debug)
-			  {console.log("have image="+img);}
+		let imgs=this.getFiles(directoryImages)
+		var imagesPhotos = this.getImages(imgs).map(function (img) {
+			if(this.config.debug){
+			  	console.log("have image="+img);
+			  }
 			return {url: "/MMM-ImagesPhotos/photo/" + img};
 		});
 		res.send(imagesPhotos);
@@ -76,17 +78,57 @@ module.exports = NodeHelper.create({
 
 	getFiles: function(path) {
 		var files=[];
+		var folders = []
 		try {
 			files= fs.readdirSync(path).filter(function (file) {
+				//console.log("found file="+file+" on path="+path)
 				if (! fs.statSync(path + "/" + file).isDirectory() ) {
-					return file;
+					if(!file.startsWith("."))
+						return file;
+				}
+				else {
+					if(this.config.debug){
+						console.log("saving folder path="+path + "/" + file)
+					}
+					folders.push(path + "/" + file)
 				}
 			});
+
+			folders.forEach((x)=>{
+				if(this.config.debug){
+					console.log("processing for sub folder="+x)
+				}
+				let y = this.getFiles(x)
+				//console.log("list"+JSON.stringify(y))
+				let worklist=[]
+				// get the number of elements in the base path
+				let c = this.path_images.split('/').length
+				// get the rest of the path
+				let xpath=x.split('/').slice(c).join('/')
+				y.forEach(f=>{
+					// if the file doesn't have a path
+					if(!f.includes("/"))
+						// add it
+						worklist.push(xpath+"/"+f)
+					else
+						// use it as is
+						worklist.push(f)
+				})
+				// add to the files list
+				files=files.concat(worklist)
+				if(this.config.debug){
+					console.log("files after concat="+JSON.stringify(files))
+				}
+			})
 		}
 		catch(exception){
-			console.log("getfiles unable to access source folder, will retry");
+			console.log("getfiles unable to access source folder, will retry, exception="+JSON.stringify(exception));
 		}
+		if(this.config.debug){
+			console.log("returning files="+JSON.stringify(files))
+		}
+
 		return files;
-	},
+	}
 
 });
