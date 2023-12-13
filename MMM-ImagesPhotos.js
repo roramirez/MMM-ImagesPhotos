@@ -33,6 +33,7 @@ Module.register("MMM-ImagesPhotos",{
 		this.photos = [];
 		this.loaded = false;
 		this.lastPhotoIndex = -1;
+		this.config['id']=this.identifier
 		this.sendSocketNotification("CONFIG", this.config);
 	},
 	getStyles: function() {
@@ -45,7 +46,7 @@ Module.register("MMM-ImagesPhotos",{
    *
    */
 	getPhotos: function() {
-		var urlApHelper = "/MMM-ImagesPhotos/photos";
+		var urlApHelper = "/MMM-ImagesPhotos/photos/"+this.identifier;
 		var self = this;
 		var retry = true;
 
@@ -85,7 +86,7 @@ Module.register("MMM-ImagesPhotos",{
 	},
 
 	socketNotificationReceived(notification, payload, source){
-		if(notification == "READY") {
+		if(notification == "READY" && payload===this.identifier) {
 			let self = this;
 			// Schedule update timer.
 			this.getPhotos();
@@ -305,7 +306,11 @@ Module.register("MMM-ImagesPhotos",{
 	processPhotos: function(data) {
 		var self = this;
 		this.photos = data;
-		if (this.loaded === false) { if(this.suspended==false) {self.updateDom(self.config.animationSpeed) ;} }
+		if (this.loaded === false) {
+			if(this.suspended==false) {
+				self.updateDom(self.config.animationSpeed) ;
+			}
+		}
 		this.loaded = true;
 	},
 

@@ -15,55 +15,65 @@ var mime = require("mime-types");
 
 module.exports = NodeHelper.create({
 	// Override start method.
+	config:{},
+	path_images:{},
 	start: function() {
 		var self = this;
 		console.log("Starting node helper for: " + this.name);
-
 	},
 
-	setConfig: function() {
-		this.path_images = path.resolve(global.root_path + "/modules/MMM-ImagesPhotos/uploads" + this.config.path);
-		if(this.config.debug)
-		{console.log("path for : " + this.name +"= "+this.path_images);}
+	setConfig: function(id) {
+		if(this.config[id].debug)
+			console.log("setconfig path="+id)
+		this.path_images[id] = path.resolve(global.root_path , "modules/MMM-ImagesPhotos/uploads" , this.config[id].path);
+		if(this.config[id].debug)
+		{console.log("path for : " + this.name+" "+ id +"= "+this.path_images[id]);}
 	},
 
 	// Override socketNotificationReceived method.
 	socketNotificationReceived: function(notification, payload) {
 		if(notification==="CONFIG"){
-			this.config=payload;
-			this.setConfig();
-			this.extraRoutes();
-			this.sendSocketNotification("READY");
+			console.log(" config based debug="+payload.id)
+			this.config[payload.id]=payload;
+			this.setConfig(payload.id);
+			this.extraRoutes(payload.id);
+			this.sendSocketNotification("READY", payload.id);
 		}
 	},
 
 	// create routes for module manager.
 	// recive request and send response
-	extraRoutes: function() {
+	extraRoutes: function(id) {
+		if(this.config[id].debug)
+			console.log("setting path="+id)
 		var self = this;
 
-		this.expressApp.get("/MMM-ImagesPhotos/photos", function(req, res) {
-			self.getPhotosImages(req, res);
+		this.expressApp.get("/MMM-ImagesPhotos/photos/"+id, function(req, res) {
+			self.getPhotosImages(req, res,id);
 		});
 
-		this.expressApp.use("/MMM-ImagesPhotos/photo", express.static(self.path_images));
+		this.expressApp.use("/MMM-ImagesPhotos/photo/"+id, express.static(self.path_images[id]));
 	},
 
 	// return photos-images by response in JSON format.
-	getPhotosImages: function(req, res) {
-		directoryImages = this.path_images;
-		let imgs=this.getFiles(directoryImages)
-		var imagesPhotos = this.getImages(imgs).map(function (img) {
-			if(this.config.debug){
-			  	console.log("have image="+img);
-			  }
-			return {url: "/MMM-ImagesPhotos/photo/" + img};
+	getPhotosImages: function(req, res,id) {
+		if(this.config[id].debug)
+			console.log("gpi id="+id)
+		directoryImages = this.path_images[id];
+		let imgs=this.getFiles(directoryImages,id)
+		var imagesPhotos = this.getImages(imgs,id).map((img) =>{
+			if(this.config[id].debug){
+			  	console.log(id+" have image="+img);
+			}
+			return {url: "/MMM-ImagesPhotos/photo/"+id+'/' + img};
 		});
 		res.send(imagesPhotos);
 	},
 
 	// return array with only images
-	getImages: function(files) {
+	getImages: function(files,id) {
+		if(this.config[id].debug)
+			console.log("gp id="+id)
 		var images = [];
 		var enabledTypes = ["image/jpeg", "image/png", "image/gif"];
 		for (idx in files) {
@@ -76,33 +86,37 @@ module.exports = NodeHelper.create({
 		return images;
 	},
 
-	getFiles: function(path) {
+	getFiles: function(path,id) {
+		if(this.config[id].debug)
+			console.log("gf id="+id)
 		var files=[];
 		var folders = []
 		try {
-			files= fs.readdirSync(path).filter(function (file) {
-				//console.log("found file="+file+" on path="+path)
+			//console.log("finding files on path="+path)
+			files= fs.readdirSync(path).filter( (file) =>{
+				if(this.config[id].debug)
+					console.log("found file="+file+" on path="+path)
 				if (! fs.statSync(path + "/" + file).isDirectory() ) {
 					if(!file.startsWith("."))
 						return file;
 				}
 				else {
-					if(this.config.debug){
-						console.log("saving folder path="+path + "/" + file)
+					if(this.config[id].debug){
+						console.log(id+" saving folder path="+path + "/" + file)
 					}
 					folders.push(path + "/" + file)
 				}
 			});
 
 			folders.forEach((x)=>{
-				if(this.config.debug){
-					console.log("processing for sub folder="+x)
+				if(this.config[id].debug){
+					console.log(id+ " processing for sub folder="+x)
 				}
-				let y = this.getFiles(x)
+				let y = this.getFiles(x,id)
 				//console.log("list"+JSON.stringify(y))
 				let worklist=[]
 				// get the number of elements in the base path
-				let c = this.path_images.split('/').length
+				let c = this.path_images[id].split('/').length
 				// get the rest of the path
 				let xpath=x.split('/').slice(c).join('/')
 				y.forEach(f=>{
@@ -116,16 +130,16 @@ module.exports = NodeHelper.create({
 				})
 				// add to the files list
 				files=files.concat(worklist)
-				if(this.config.debug){
+				if(this.config[id].debug){
 					console.log("files after concat="+JSON.stringify(files))
 				}
 			})
 		}
 		catch(exception){
-			console.log("getfiles unable to access source folder, will retry, exception="+JSON.stringify(exception));
+			console.log("getfiles unable to access source folder,path="+path+" will retry, exception="+JSON.stringify(exception));
 		}
-		if(this.config.debug){
-			console.log("returning files="+JSON.stringify(files))
+		if(this.config[id].debug){
+			console.log(id+" returning files="+JSON.stringify(files))
 		}
 
 		return files;
