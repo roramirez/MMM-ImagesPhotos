@@ -6,8 +6,9 @@
  * By Rodrigo Ramírez Norambuena https://rodrigoramirez.com
  * MIT Licensed.
  */
+const ourModuleName="MMM-ImagesPhotos"
 
-Module.register("MMM-ImagesPhotos",{
+Module.register(ourModuleName,{
 	defaults: {
 		opacity: 0.9,
 		animationSpeed: 500,
@@ -25,6 +26,7 @@ Module.register("MMM-ImagesPhotos",{
 	wrapper: null,
 	suspended: false,
 	timer:null,
+	fullscreen: false,
 
 	requiresVersion: "2.1.0", // Required version of MagicMirror
 
@@ -73,6 +75,15 @@ Module.register("MMM-ImagesPhotos",{
 	},
 	notificationReceived(notification,payload,sender){
 		// hook to turn off messages about notiofications, clock once a second
+		if(notification=="ALL_MODULES_STARTED"){
+			const ourInstances=MM.getModules().withClass(ourModuleName)
+			ourInstances.forEach(m=>{
+				if(m.data.position.toLowerCase().startsWith("fullscreen")){
+					this.fullscreen= true;
+				}
+			})
+
+		}
 	},
 	startTimer: function(){
 		let self = this;
@@ -201,7 +212,32 @@ Module.register("MMM-ImagesPhotos",{
 		{this.startTimer();}
 	},
 
-	getDom: function() {
+  getDom(){
+  	if(this.fullscreen)
+  		return this.getDomFS()
+  	else
+  		return this.getDomnotFS()
+  },
+
+  getDomnotFS(){
+		var self = this;
+		var wrapper = document.createElement("div");
+		var photoImage = this.randomPhoto();
+
+		if (photoImage) {
+			var img = document.createElement("img");
+			img.src = photoImage.url;
+			img.id = "mmm-images-photos";
+			img.style.maxWidth = this.config.maxWidth;
+			img.style.maxHeight = this.config.maxHeight;
+			img.style.opacity = self.config.opacity;
+			wrapper.appendChild(img);
+		}
+		return wrapper;
+  },
+
+
+	getDomFS: function() {
 		let self = this;
 		// if wrapper div not yet created
 		if(this.wrapper ==null)
