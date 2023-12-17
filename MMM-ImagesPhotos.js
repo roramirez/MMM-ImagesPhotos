@@ -233,6 +233,7 @@ Module.register(ourModuleName,{
 			img.style.opacity = self.config.opacity;
 			img.className = "bgimage"
 			wrapper.appendChild(img);
+			self.startTimer();
 		}
 		return wrapper;
   },
