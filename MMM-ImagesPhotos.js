@@ -231,6 +231,7 @@ Module.register(ourModuleName,{
 			img.style.maxWidth = this.config.maxWidth;
 			img.style.maxHeight = this.config.maxHeight;
 			img.style.opacity = self.config.opacity;
+			img.className = "bgimage"
 			wrapper.appendChild(img);
 		}
 		return wrapper;
@@ -244,7 +245,7 @@ Module.register(ourModuleName,{
 		// create it once, try to reduce image flash on change
 		{this.wrapper = document.createElement("div");
 		  this.bk=document.createElement("div");
-			this.bk.className="bgimage";
+			this.bk.className="bgimagefs";
 			if(this.config.fill== true){
 				this.bk.style["filter"] ="blur("+this.config.blur+"px)";
 				this.bk.style["-webkit-filter"] ="blur("+this.config.blur+"px)";

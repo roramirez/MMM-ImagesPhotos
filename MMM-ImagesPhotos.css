@@ -3,7 +3,9 @@
  * Custom CSS module here
  *
  * */
-.bgimage {
+
+ /* when full screen */
+.bgimagefs {
 
   /* Center and scale the image nicely */
 
@@ -13,4 +15,9 @@
   height: 100%;
   width: 100%;
   background-size: cover;
+}
+
+/* not fullscreen */
+.bgimage  {
+
 }
