@@ -1,12 +1,10 @@
 /*
- *
- * Custom CSS module here
- *
- * */
+ * If you want to customize the CSS of this module, copy the definitions
+ * below into your custom.css and make your changes there.
+ */
 
- /* when full screen */
+/* when full screen */
 .bgimagefs {
-
   /* Center and scale the image nicely */
 
   position: absolute;
@@ -18,6 +16,5 @@
 }
 
 /* not fullscreen */
-.bgimage  {
-
+.bgimage {
 }
