@@ -1,26 +1,43 @@
 {
-  "name": "magicmirror-images-photos",
-  "version": "0.1.1",
+  "name": "mmm-images-photos",
+  "version": "0.2.0",
   "description": "Show photos and images from directory",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sdetweil/MMM-ImagesPhotos"
+  },
+  "keywords": [
+    "MagicMirror",
+    "photos",
+    "images"
+  ],
   "main": "MMM-ImagesPhotos.js",
   "author": "Rodrigo Ramírez Norambuena",
   "license": "MIT",
   "devDependencies": {
-    "grunt": "latest",
-    "grunt-eslint": "latest",
-    "grunt-jsonlint": "latest",
-    "grunt-markdownlint": "^1.0.13",
-    "grunt-stylelint": "latest",
-    "grunt-yamllint": "latest",
+    "@stylistic/eslint-plugin": "latest",
+    "eslint": "latest",
+    "eslint-config-prettier": "latest",
+    "eslint-plugin-import": "latest",
+    "eslint-plugin-json": "latest",
+    "eslint-plugin-markdownlint": "latest",
+    "jsonc-eslint-parser": "latest",
+    "lint-staged": "latest",
+    "markdownlint": "latest",
+    "prettier": "latest",
+    "stylelint": "latest",
     "stylelint-config-standard": "latest",
-    "time-grunt": "latest"
+    "stylelint-prettier": "latest"
   },
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "fs": "0.0.1-security",
-    "mime-types": "^2.1.31",
-    "path": "^0.12.7",
-    "request": "^2.88.2",
-    "url": "^0.11.0"
+    "mime-types": "^2.1.35",
+    "path": "^0.12.7"
+  },
+  "scripts": {
+    "lint": "eslint . && stylelint **/*.css && prettier --check .",
+    "lint:fix": "eslint --fix . && stylelint --fix **/*.css && prettier --write .",
+    "test": "npm run lint"
   }
 }
