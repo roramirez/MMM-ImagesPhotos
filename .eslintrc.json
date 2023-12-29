@@ -1,16 +1,49 @@
 {
-	"rules": {
-		"indent": ["error", "tab"],
-		"quotes": ["error", "double"],
-		"max-len": ["error", 250],
-		"curly": "error",
-		"camelcase": ["error", {"properties": "never"}],
-		"no-trailing-spaces": ["error"],
-		"no-irregular-whitespace": ["error"]
-	},
-	"env": {
-		"browser": true,
-		"node": true,
-		"es6": true
-	}
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "extends": ["eslint:all", "plugin:@stylistic/all-extends"],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "root": true,
+  "rules": {
+    "array-callback-return": "off",
+    "consistent-this": "off",
+    "consistent-return": "off",
+    "id-length": "off",
+    "line-comment-position": "off",
+    "max-lines": "off",
+    "max-lines-per-function": "off",
+    "max-params": "off",
+    "max-statements": "off",
+    "no-inline-comments": "off",
+    "no-magic-numbers": "off",
+    "no-plusplus": "off",
+    "no-ternary": "off",
+    "no-unused-vars": [
+      "error",
+      { "vars": "all", "args": "none", "ignoreRestSiblings": false }
+    ],
+    "one-var": "off",
+    "sort-keys": "off",
+    "sort-vars": "off"
+  },
+  "overrides": [
+    {
+      "files": ["*.json", "*.json5"],
+      "parser": "jsonc-eslint-parser"
+    },
+    {
+      "files": ["*.md"],
+      "parser": "eslint-plugin-markdownlint/parser",
+      "extends": ["plugin:markdownlint/recommended"],
+      "rules": {
+        "markdownlint/md013": "off",
+        "markdownlint/md033": "off"
+      }
+    }
+  ]
 }
