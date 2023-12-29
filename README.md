@@ -11,7 +11,7 @@ This module reads the images from the _uploads_ directory inside the module.
 
 ```bash
 cd ~/MagicMirror/modules
-git clone https://github.com/sdetweil/MMM-ImagesPhotos
+git clone https://github.com/roramirez/MMM-ImagesPhotos
 cd MMM-ImagesPhotos
 npm install
 ```
@@ -41,8 +41,10 @@ The entry in `config.js` can include the following options:
 | `blur`             | the size of the pixel blur of the background fill, <br>Default 8
 
 
-Here is an example of an entry in `config.js`
+Here is an example of an entry in `config.js`:
+
 not fullscreen
+
 ```js
 {
  module: "MMM-ImagesPhotos",
@@ -57,8 +59,10 @@ not fullscreen
  }
 },
 ```
+
 fullscreen
-```
+
+```js
 {
 	module: "MMM-ImagesPhotos",
 	position: "fullscreen_below",
